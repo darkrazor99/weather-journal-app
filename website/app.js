@@ -12,7 +12,7 @@ function doWork(){
     // january is 0 
     let newDate = d.getMonth()+1+'/'+ d.getDate()+'/'+ d.getFullYear();
     const userFeelings = document.getElementById('feelings').value;
-    //  call to api to get data from there?
+    //  call to api to get data from there
     getApiData(zip)
     .then(function(data){
         // posting data to my server
@@ -21,9 +21,7 @@ function doWork(){
         date: newDate,
         userResponse: userFeelings
         });
-        // getting data from all
-        getData('/all');
-        // finally update
+        updateUi();
     });
 }
 
@@ -59,15 +57,27 @@ const postData = async(url = '', data = {}) => {
 };
 
 /* Function to GET Project Data */
-const getData = async(url)=>{
-    const response = await fetch(url);
+const updateUi = async()=>{
+    const response = await fetch('/all');
     try {
         const newData = await response.json();
-        // remove me pefore u supmit
-        console.log(newData); 
+
+        document.getElementById('date').innerHTML=newData.date;
+        document.getElementById('temp').innerHTML=newData.temperature;
+        document.getElementById('content').innerHTML=newData.userResponse; 
         return newData;
 
     } catch (error) {
         console.log("error", error);
     }
 };
+
+// function to update ui
+// function updateUi(data){
+//     // <div id = "date"></div> 
+//     // <div id = "temp"></div>
+//     // <div id = "content"></div>
+//     document.getElementById('date').innerHTML=data.date;
+//     document.getElementById('temp').innerHTML=data.temperature;
+//     document.getElementById('content').innerHTML=data.userResponse;
+// }
