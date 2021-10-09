@@ -50,4 +50,5 @@ function addData(request, response){
         userResponse: request.body.userResponse
     }
     projectData = newEntity;
+    response.send();
 }
