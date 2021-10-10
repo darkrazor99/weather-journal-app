@@ -5,29 +5,41 @@ const apiKey = '9f8945e7a41ea1d94c242c1e45e27c33';
 document.getElementById('generate').addEventListener('click', doWork);
 
 /* Function called by event listener */
-function doWork(){
+async function doWork(){
 
     const zip = document.getElementById('zip').value;
-    let d = new Date();
-    // january is 0 
-    let newDate = d.getMonth()+1+'/'+ d.getDate()+'/'+ d.getFullYear();
-    const userFeelings = document.getElementById('feelings').value;
-    //  call to api to get data from there
-    getApiData(zip)
-    .then(function(data){
-        // posting data to my server
-        postData('/add', {
-        temperature: data.list[0].main.temp,
-        date: newDate,
-        userResponse: userFeelings
-        });
-        updateUi();
-    });
+    
+    if(!zip) {
+        alert('please enter a zip code');
+    } else {
+        // get the date today
+        let d = new Date();
+        // january is 0 
+        let newDate = d.getMonth()+1+'/'+ d.getDate()+'/'+ d.getFullYear();
+        
+        // get user input
+        const userFeelings = document.getElementById('feelings').value;
+        
+        //  call to api to get temp from there
+        // then post it and then update ui
+        getApiData(zip)
+        .then(function(data){
+            // posting data to my server
+            await postData('/add', {
+            temperature: data.list[0].main.temp,
+            date: newDate,
+            userResponse: userFeelings
+            });
+        }).then(updateUi);
+
+    }
+    
 }
 
 /* Function to GET Web API Data*/
-const getApiData = async(id) =>{
-    const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${id}&appid=${apiKey}`);
+const getApiData = async(zip) =>{
+    // api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}&appid={API key}
+    const response = await fetch(`api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}`);
     try {
         const apiData = await response.json();
         return apiData;
@@ -71,13 +83,3 @@ const updateUi = async()=>{
         console.log("error", error);
     }
 };
-
-// function to update ui
-// function updateUi(data){
-//     // <div id = "date"></div> 
-//     // <div id = "temp"></div>
-//     // <div id = "content"></div>
-//     document.getElementById('date').innerHTML=data.date;
-//     document.getElementById('temp').innerHTML=data.temperature;
-//     document.getElementById('content').innerHTML=data.userResponse;
-// }
