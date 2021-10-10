@@ -39,7 +39,7 @@ async function doWork(){
 /* Function to GET Web API Data*/
 const getApiData = async(zip) =>{
     // api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}&appid={API key}
-    const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}`);
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}&units=metric`);
     try {
         const apiData = await response.json();
         return apiData;
