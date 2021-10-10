@@ -25,8 +25,8 @@ async function doWork(){
         getApiData(zip)
         .then(function(data){
             // posting data to my server
-            await postData('/add', {
-            temperature: data.list[0].main.temp,
+            return postData('/add', {
+            temperature: data.main.temp,
             date: newDate,
             userResponse: userFeelings
             });
@@ -39,7 +39,7 @@ async function doWork(){
 /* Function to GET Web API Data*/
 const getApiData = async(zip) =>{
     // api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}&appid={API key}
-    const response = await fetch(`api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}`);
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}`);
     try {
         const apiData = await response.json();
         return apiData;
@@ -60,8 +60,7 @@ const postData = async(url = '', data = {}) => {
     });
 
     try {
-        const newData = await response.json();
-        return newData;
+        return response;
     } catch (error) {
         console.log("error", error);
         
